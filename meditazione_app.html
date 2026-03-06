@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Meditazione</title>
+
+<style>
+
+body{
+margin:0;
+height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+font-family:Arial;
+background:blue;
+color:white;
+text-align:center;
+}
+
+h1{
+margin-bottom:10px;
+}
+
+.circle{
+width:160px;
+height:160px;
+border-radius:50%;
+background:green;
+transition:all 4s ease-in-out;
+box-shadow:0 0 40px rgba(255,255,255,0.5);
+margin:20px;
+}
+
+button{
+padding:10px 20px;
+margin:5px;
+font-size:16px;
+border:none;
+border-radius:8px;
+background:green;
+color:white;
+}
+button:hover{
+background:blue;
+}
+#text{
+font-size:24px;
+margin-top:10px;
+}
+
+#timer{
+font-size:28px;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>App Meditazione</h1>
+
+<div>
+
+<button onclick="setMode('calmo')">Respiro Calmo</button>
+<button onclick="setMode('ansia')">Anti Ansia</button>
+<button onclick="setMode('zen')">Zen</button>
+
+</div>
+
+<div class="circle" id="circle"></div>
+
+<div id="text">Scegli una modalità</div>
+
+<button onclick="startMeditation()">Inizia</button>
+
+<div id="timer">05:00</div>
+
+<audio id="gong" src="gong.mp3"></audio>
+<audio id="nature" src="natura.mp3" loop></audio>
+
+<script>
+
+let mode="calmo"
+
+let inhale=4
+let hold=2
+let exhale=6
+
+let totalTime=300
+
+let phase=0
+let phaseTime=0
+
+let interval
+
+const circle=document.getElementById("circle")
+const text=document.getElementById("text")
+const timer=document.getElementById("timer")
+
+function setMode(m){
+
+mode=m
+
+if(mode=="calmo"){
+inhale=4
+hold=2
+exhale=6
+}
+
+if(mode=="ansia"){
+inhale=4
+hold=4
+exhale=4
+}
+
+if(mode=="zen"){
+inhale=5
+hold=5
+exhale=5
+}
+
+text.innerText="Modalità selezionata"
+
+}
+
+function startMeditation(){
+
+document.getElementById("gong").play()
+document.getElementById("nature").play()
+
+phase=0
+phaseTime=inhale
+
+interval=setInterval(update,1000)
+
+}
+
+function update(){
+
+if(totalTime<=0){
+
+clearInterval(interval)
+
+text.innerText="Meditazione finita"
+
+document.getElementById("gong").play()
+
+return
+}
+
+totalTime--
+
+let m=Math.floor(totalTime/60)
+let s=totalTime%60
+
+timer.innerText=
+m.toString().padStart(2,"0")+":"+
+s.toString().padStart(2,"0")
+
+phaseTime--
+
+if(phase==0){
+
+text.innerText="Inspira"
+circle.style.transform="scale(1.4)"
+
+}
+
+if(phase==1){
+
+text.innerText="Trattieni"
+
+}
+
+if(phase==2){
+
+text.innerText="Espira"
+circle.style.transform="scale(0.8)"
+
+}
+
+if(phaseTime<=0){
+
+phase++
+
+if(phase>2) phase=0
+
+if(phase==0) phaseTime=inhale
+if(phase==1) phaseTime=hold
+if(phase==2) phaseTime=exhale
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
